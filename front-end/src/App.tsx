@@ -1,14 +1,16 @@
 
 import './App.css'
+import { AuthContextProvider } from './context/AuthContext'
+import AppRoutes from './routes/AppRoutes'
 
 function App() {
-
-
-  return (
-    <div className='text-3xl font-bold underline text-amber-200'>
-      Hello World
-    </div>
-  )
+    return (
+        <>
+            <AuthContextProvider>
+                <AppRoutes />
+            </AuthContextProvider>
+        </>
+    )
 }
 
 export default App

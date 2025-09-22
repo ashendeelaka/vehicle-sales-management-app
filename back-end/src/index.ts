@@ -1,13 +1,13 @@
-import express, { type Application, type Request, type Response } from "express";
-import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+
+import express, { Application} from "express";
+import cors from "cors";
 import "reflect-metadata";
 import { AppDataSource } from "./config/data-source";
-
 import authRoutes from "./routes/authRoutes";
 import vehicleRoutes from "./routes/vehicleRoutes";
-
-dotenv.config();
+import path from "path";
 
 const app: Application = express();
 
@@ -17,6 +17,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/vehicles", vehicleRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "..", process.env.UPLOAD_DIR || "uploads")));
 
 AppDataSource.initialize().then(() => {
     console.log("📦 DB connected successfully");

@@ -30,3 +30,33 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal Server error" });
   }
 };
+
+export const createAdmin = async (req: Request, res: Response) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ message: "Username and password required" });
+    }
+
+    const adminRepo = AppDataSource.getRepository(Admin);
+    const existing = await adminRepo.findOne({ where: { username } });
+    if (existing) {
+      return res.status(400).json({ message: "Admin already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const admin = adminRepo.create({
+      username,
+      passwordHash: hashedPassword,
+    });
+
+    await adminRepo.save(admin);
+
+    res.status(201).json({ message: "Admin created successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
